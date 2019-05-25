@@ -18,20 +18,18 @@ class AttributesToAddStrings
 		int shift;
 		int lastDigit;
 		int ASCIofZero;
-	AttributesToAddStrings()
-	{
-		result = "";
-		shift = 0;
-		ASCIofZero = 48;
-	}
-	initialization(string one, string two)
-	{
-		first = one;
-		second = two;
-		shorterLength = isShorter(one, two);
-		firstLeftDigits = one.length();
-		secondLeftDigits = two.length();
-	}
+
+		initialization(string one, string two)
+		{
+			first = one;
+			second = two;
+			shorterLength = isShorter(one, two);
+			firstLeftDigits = one.length();
+			secondLeftDigits = two.length();
+			result = "";
+			shift = 0;
+			ASCIofZero = 48;
+		}
 };
 void addTillLengthMatches(AttributesToAddStrings &a)
 {
