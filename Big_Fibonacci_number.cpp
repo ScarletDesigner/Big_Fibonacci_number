@@ -17,7 +17,7 @@ class AttributesToAddStrings
 		string result;
 		int shift;
 		int lastDigit;
-		int ASCIofZero;
+		static const int ASCIofZero = 48;
 
 		initialization(string one, string two)
 		{
@@ -28,7 +28,6 @@ class AttributesToAddStrings
 			secondLeftDigits = two.length();
 			result = "";
 			shift = 0;
-			ASCIofZero = 48;
 		}
 };
 void addTillLengthMatches(AttributesToAddStrings &a)
