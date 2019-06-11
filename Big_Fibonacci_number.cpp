@@ -1,9 +1,8 @@
 #include <iostream>
 using namespace std;
 
-class AttributesToAddStrings
+class FibonacciNumberCreator
 {
-public:
 	string first, second;
 	int shorterLength;
 	int firstLeftDigits, secondLeftDigits;
@@ -11,66 +10,71 @@ public:
 	int shift;
 	int lastDigit;
 	static const int ASCIofZero = 48;
-
-	initialization(string one, string two)
-	{
-		first = one;
-		second = two;
-		shorterLength = isShorter(one, two);
-		firstLeftDigits = one.length();
-		secondLeftDigits = two.length();
-		result = "";
-		shift = 0;
-	}
 	
-	string fibonacci(int n)
+public:
+	string fibonacciNumber(int n)
 	{
 		if(n == 0)
 			return "0";
 		if(n == 1)
 			return "1";
-			
+		
 		string fib[n+1];
 		fib[0] = '0';
 		fib[1] = '1';
 		for(int i=2; i<=n; i++)
 		{
-			fib[i] = add(fib[i-1], fib[i-2]);
+			fib[i] = addStrings(fib[i-1], fib[i-2]);
 		}
+		
+		checkForEmptyResult();
 		
 		return fib[n];
 	}
 	
-	string add(string first, string second)
+private:
+
+	string addStrings(string a, string b)
 	{
-		initialization(first, second);
+		initialization(a, b);
 		addTillLengthMatches();
-		addLeftDigitsOfFirstString();
-		addLeftDigitsOfSecondString();
-		addLeftShiftToNewRow();
-		checkForEmptyResult();
+		addRemainingDigitsOfFirstString();
+		addRemainingDigitsOfSecondString();
+		addRemainingShiftToNewRow();
+		
 		return result;
 	}
-	
-	int isShorter(string a, string b)
+
+	initialization(string a, string b)
 	{
-		if (a.length() < b.length())
-			return a.length();
+		first = a;
+		second = b;
+		shorterLength = isShorter();
+		firstLeftDigits = first.length();
+		secondLeftDigits = second.length();
+		result = "";
+		shift = 0;
+	}
+	
+	int isShorter()
+	{
+		if (first.length() < second.length())
+			return first.length();
 		else
-			return b.length();
+			return second.length();
 	}
 	
 	void addTillLengthMatches()
 	{
-		for(int i=1; i <= shorterLength; i++)
+		for(int i = 1; i <= shorterLength; i++)
 		{
-			lastDigit = (int)(first[--firstLeftDigits]) + (int)(second[--secondLeftDigits]) + shift - 96;
+			lastDigit = (int)(first[--firstLeftDigits]) + (int)(second[--secondLeftDigits]) + shift - 2*ASCIofZero;
 			shift = lastDigit / 10;
 			result = (char)((lastDigit % 10) + ASCIofZero) + result;
 		}
 	}
 	
-	void addLeftDigitsOfFirstString()
+	void addRemainingDigitsOfFirstString()
 	{
 		while(firstLeftDigits > 0)
 		{
@@ -80,20 +84,20 @@ public:
 		}
 	}
 	
-	void addLeftDigitsOfSecondString()
+	void addRemainingDigitsOfSecondString()
 	{
 		while(secondLeftDigits > 0)
 		{
-			lastDigit = second[--secondLeftDigits] + shift - 48;
+			lastDigit = second[--secondLeftDigits] + shift - ASCIofZero;
 			shift = lastDigit / 10;
-			result = (char)((lastDigit % 10) + 48) + result;
+			result = (char)((lastDigit % 10) + ASCIofZero) + result;
 		}
 	}
 	
-	void addLeftShiftToNewRow()
+	void addRemainingShiftToNewRow()
 	{
 		if(shift > 0)
-			result = (char)(shift + 48) + result;
+			result = (char)(shift + ASCIofZero) + result;
 	}
 	
 	void checkForEmptyResult()
@@ -106,8 +110,8 @@ public:
 
 int main(){
 	
-	AttributesToAddStrings a;
-	cout<<a.fibonacci(1000);
+	FibonacciNumberCreator a;
+	cout<<a.fibonacciNumber(1000);
 	
 	return 0;
 }
