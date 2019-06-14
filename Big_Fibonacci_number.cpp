@@ -1,42 +1,21 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-class FibonacciNumberCreator
+class stringAdder
 {
+protected:
 	string first, second;
-	int shorterLength;
-	int firstLeftDigits, secondLeftDigits;
 	string result;
+	int shorterLength;
+	int firstRemainingDigits, secondRemainingDigits;
 	int shift;
 	int lastDigit;
 	static const int ASCIofZero = 48;
 	
-public:
-	string fibonacciNumber(int n)
+	string addStrings(string first, string second)
 	{
-		if(n == 0)
-			return "0";
-		if(n == 1)
-			return "1";
-		
-		string fib[n+1];
-		fib[0] = '0';
-		fib[1] = '1';
-		for(int i=2; i<=n; i++)
-		{
-			fib[i] = addStrings(fib[i-1], fib[i-2]);
-		}
-		
-		checkForEmptyResult();
-		
-		return fib[n];
-	}
-	
-private:
-
-	string addStrings(string a, string b)
-	{
-		initialization(a, b);
+		initialization(first, second);
 		addTillLengthMatches();
 		addRemainingDigitsOfFirstString();
 		addRemainingDigitsOfSecondString();
@@ -44,14 +23,14 @@ private:
 		
 		return result;
 	}
-
-	initialization(string a, string b)
+	
+	void initialization(string a, string b)
 	{
 		first = a;
 		second = b;
 		shorterLength = isShorter();
-		firstLeftDigits = first.length();
-		secondLeftDigits = second.length();
+		firstRemainingDigits = first.length();
+		secondRemainingDigits = second.length();
 		result = "";
 		shift = 0;
 	}
@@ -60,15 +39,20 @@ private:
 	{
 		if (first.length() < second.length())
 			return first.length();
-		else
-			return second.length();
+	
+		return second.length();
 	}
 	
 	void addTillLengthMatches()
 	{
 		for(int i = 1; i <= shorterLength; i++)
 		{
-			lastDigit = (int)(first[--firstLeftDigits]) + (int)(second[--secondLeftDigits]) + shift - 2*ASCIofZero;
+			firstRemainingDigits--;
+			secondRemainingDigits--;
+			
+			lastDigit = (int)(first[firstRemainingDigits]) + 
+			(int)(second[secondRemainingDigits]) + shift - 2*ASCIofZero;
+			
 			shift = lastDigit / 10;
 			result = (char)((lastDigit % 10) + ASCIofZero) + result;
 		}
@@ -76,9 +60,9 @@ private:
 	
 	void addRemainingDigitsOfFirstString()
 	{
-		while(firstLeftDigits > 0)
+		while(firstRemainingDigits > 0)
 		{
-			lastDigit = first[--firstLeftDigits] + shift - ASCIofZero;
+			lastDigit = first[--firstRemainingDigits] + shift - ASCIofZero;
 			shift = lastDigit / 10;
 			result = (char)((lastDigit % 10) + ASCIofZero) + result;
 		}
@@ -86,9 +70,9 @@ private:
 	
 	void addRemainingDigitsOfSecondString()
 	{
-		while(secondLeftDigits > 0)
+		while(secondRemainingDigits > 0)
 		{
-			lastDigit = second[--secondLeftDigits] + shift - ASCIofZero;
+			lastDigit = second[--secondRemainingDigits] + shift - ASCIofZero;
 			shift = lastDigit / 10;
 			result = (char)((lastDigit % 10) + ASCIofZero) + result;
 		}
@@ -98,6 +82,56 @@ private:
 	{
 		if(shift > 0)
 			result = (char)(shift + ASCIofZero) + result;
+	}
+};
+
+class FibonacciNumberCreator: public stringAdder
+{
+	vector<string> fibonacciNumbers;
+	int fibonacciNumberToDisplay;
+	
+public:
+	void printFibonacciNumber(int fibonacciNumberToDisplay)
+	{
+		this -> fibonacciNumberToDisplay = fibonacciNumberToDisplay;
+		checkIfRequestedFirstOrSecondFibonacciNumber();
+		
+		makeStartingArray();
+		fillVectorTillNumberToDisplay();
+		checkForEmptyResult();
+		
+		cout<<fibonacciNumbers[fibonacciNumberToDisplay]<<endl;
+	}
+	
+private:
+	void checkIfRequestedFirstOrSecondFibonacciNumber()
+	{
+		if(fibonacciNumberToDisplay == 0)
+		{
+			cout<<"0"<<endl;
+			exit(0);
+		}
+			
+		if(fibonacciNumberToDisplay == 1)
+		{
+			cout<<"1"<<endl;
+			exit(0);
+		}
+	}	
+	
+	void makeStartingArray()
+	{
+		fibonacciNumbers.push_back("0");
+		fibonacciNumbers.push_back("1");
+	}
+	
+	void fillVectorTillNumberToDisplay()
+	{
+		for(int i = 2; i <= fibonacciNumberToDisplay; i++)
+		{
+			//every fibonacci number greater than 2 is made by adding 2 previous fibonacci numbers
+			fibonacciNumbers.push_back( addStrings(fibonacciNumbers[i-1], fibonacciNumbers[i-2]) );
+		}
 	}
 	
 	void checkForEmptyResult()
@@ -111,7 +145,7 @@ private:
 int main(){
 	
 	FibonacciNumberCreator a;
-	cout<<a.fibonacciNumber(1000);
+	a.printFibonacciNumber(1000);
 	
 	return 0;
 }
